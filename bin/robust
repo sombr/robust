@@ -1,0 +1,16 @@
+#!/usr/bin/env plackup
+# vim: ft=perl
+package psgi::robust;
+use strict;
+use warnings;
+
+use Plack::Builder;
+
+use Robust::Controller::Index;
+
+builder {
+    mount "/"      => sub { Robust::Controller::Class->new(shift)->index },
+    mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
+};
+
+1;
