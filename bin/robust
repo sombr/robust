@@ -4,13 +4,13 @@ package psgi::robust;
 use strict;
 use warnings;
 
+use lib 'lib';
+
 use Plack::Builder;
 
-use Robust::Controller::Index;
+use Robust::Controller::Class;
 
 builder {
     mount "/"      => sub { Robust::Controller::Class->new(shift)->index },
     mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
 };
-
-1;

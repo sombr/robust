@@ -13,7 +13,7 @@ sub render {
     my ($self, $name, @data) = @_;
     $name //= "404";
 
-    $VIEWS{$name}->new(@data)->render;
+    [ 200, [], [$VIEWS{$name}->new(@data)->render] ];
 }
 
 1;
