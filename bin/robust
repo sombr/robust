@@ -11,6 +11,7 @@ use Plack::Builder;
 use Robust::Controller::Class;
 
 builder {
+    enable "Plack::Middleware::AccessLog::Timed", format => '%{X_FORWARDED_FOR}i %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i"';
     mount "/"      => sub { Robust::Controller::Class->new(shift)->index },
     mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
 };
