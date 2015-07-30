@@ -24,13 +24,30 @@
             </div>
             -->
           </div>
+          {{#session}}
+              {{#active_class}}
+              <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                  <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Attendance</a>
+                  {{#is_admin}}
+                  <a href="#scroll-tab-2" class="mdl-layout__tab">Accounting</a>
+                  {{/is_admin}}
+                  <a href="#scroll-tab-3" class="mdl-layout__tab">Elements & Moves</a>
+              </div>
+              {{/active_class}}
+          {{/session}}
         </header>
         <div class="mdl-layout__drawer">
           {{#session}}
               <span class="mdl-layout-title"><i>{{title}}</i></span>
               <nav class="mdl-navigation">
                   {{#classes}}
-                  <a class="mdl-navigation__link" href="/class/{{uid}}"><h6>{{name}}</h6></a>
+                  <a class="mdl-navigation__link" href="/class/{{uid}}">
+                      <h6>
+                          {{#is_active}}<b>{{/is_active}}
+                          {{name}}
+                          {{#is_active}}</b>{{/is_active}}
+                      </h6>
+                  </a>
                   {{/classes}}
               </nav>
           {{/session}}
@@ -47,6 +64,21 @@
           {{/session}}
         </div>
         <main class="mdl-layout__content">
+          {{#session}}
+              {{#active_class}}
+              <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+                  <div class="page-content"><!-- Your content goes here --></div>
+              </section>
+              {{#is_admin}}
+              <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+                  <div class="page-content"><!-- Your content goes here --></div>
+              </section>
+              {{/is_admin}}
+              <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+                  <div class="page-content"><!-- Your content goes here --></div>
+              </section>
+              {{/active_class}}
+          {{/session}}
         </main>
       </div>
   </body>

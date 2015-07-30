@@ -7,7 +7,7 @@ my @VIEWS = qw/ index /;
 
 my %VIEWS = map {
     $_ => load_class("Robust::View::Template::$_")
-} qw/ index /;
+} qw/ index show /;
 
 sub render {
     my ($self, $name, @data) = @_;

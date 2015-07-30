@@ -18,25 +18,13 @@ has title => (
     required => 1,
 );
 
-has nav_menu => (
+has session => (
     is => "ro",
-    isa => ArrayRef[HashRef],
-    default => sub { [] }
-);
-
-has in_mem => (
-    is => "ro",
-    isa => Bool,
-    default => 1,
+    isa => Maybe[HashRef],
 );
 
 sub template_namespace {
     "Robust::View::Template";
-}
-
-sub read_file {
-    my $self = shift;
-    $self->{__mem__template__} //= $self->SUPER(@_);
 }
 
 1;
