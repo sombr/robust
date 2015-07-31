@@ -1,0 +1,104 @@
+var AttendanceTableNodeList = React.createClass({
+    componentDidMount: function() {
+        this.getDOMNode().setAttribute('for', this.props.uid);
+    },
+    render: function() {
+        return (
+            <ul className="mdl-menu mdl-js-menu">
+                <li className="mdl-menu__item">-</li>
+                <li className="mdl-menu__item">Single</li>
+                <li className="mdl-menu__item">Multi</li>
+                <li className="mdl-menu__item">New Multi</li>
+            </ul>
+       );
+    }
+});
+
+var AttendanceTableNode = React.createClass({
+    render: function() {
+        var id = "am." + this.props.name + "." + this.props.date;
+        return (
+            <td className="mdl-data-table__cell--non-numeric">
+                <button id={id} className="mdl-button mdl-js-button">
+                    {this.props.status}
+                </button>
+                <AttendanceTableNodeList uid={id} current_state={this.props.status}/>
+            </td>
+        );
+    }
+});
+
+var AttendanceTable = React.createClass({
+    getInitialState: function() {
+        return { data: {
+            days: [2,4],
+            month: (new Date()).getMonth(),
+            year: (new Date()).getFullYear(),
+            data: {
+                'Karl': { "30/7/2015": "Yes!" },
+                'Karl1': { "30/7/2015": "Yes!" },
+                'Karl2': { "30/7/2015": "Yes!" },
+                'Karl3': { "30/7/2015": "Yes!" }
+            }
+        } };
+    },
+    render: function() {
+        var data = this.state.data.data;
+        var dates = [];
+        var date_map = {};
+        for ( var day in this.state.data.days ) {
+            date_map[this.state.data.days[day]] = true;
+        }
+        for ( var i = 1; i <= 35; i++ ) {
+            var date = new Date(this.state.data.year, this.state.data.month, i);
+            if ( date_map[ date.getDay() ] ) {
+                dates.push(date);
+            }
+        }
+
+        var date_nodes = dates.map( function (date) {
+            return (
+                <th className="mdl-data-table__cell--non-numeric" key={date}>{format_date(date,true)}</th>
+            );
+        });
+
+        var j = 1;
+        var student_nodes = Object.keys(data).map( function (student) {
+            var attendance_nodes = dates.map( function (date) {
+                var tdate = format_date(date,false);
+                var status = data[ student ][tdate] || "-";
+                var uid = student + "|" + tdate;
+                return (
+                    <AttendanceTableNode name={student} date={tdate} status={status} key={uid} />
+                );
+            });
+
+            return (
+                <tr key={student}>
+                    <td>{j}</td>
+                    <td className="mdl-data-table__cell--non-numeric">{student}</td>
+                    {attendance_nodes}
+                </tr>
+            );
+        });
+
+        return (
+            <table className="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th className="mdl-data-table__cell--non-numeric">Name</th>
+                        {date_nodes}
+                    </tr>
+                </thead>
+                <tbody>
+                    {student_nodes}
+                </tbody>
+            </table>
+        );
+    }
+});
+React.render(
+    <AttendanceTable />,
+    document.getElementById('attendance')
+);
