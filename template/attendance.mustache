@@ -1,28 +1,57 @@
+// vim:ft=javascript
+var AttendanceTableNodeListItem = React.createClass({
+    render: function() {
+        var realCallback = this.props.onClickCallback;
+        var value = this.props.value;
+        var callback = function(event, id) {
+            realCallback(event, id, value);
+        };
+        return (
+            <li className="mdl-menu__item" onClick={callback}>{value}</li>
+        );
+    }
+});
+
 var AttendanceTableNodeList = React.createClass({
     componentDidMount: function() {
         this.getDOMNode().setAttribute('for', this.props.uid);
     },
     render: function() {
+        var current = this.props.status;
+        var callback = this.props.onClickCallback;
+        var selections = ["-", "Single", "Multi", "New Multi"].filter(function (item) { return (item != current) }).map(function (item) {
+            return (
+                <AttendanceTableNodeListItem key={item} onClickCallback={callback} value={item} />
+            );
+        });
+
         return (
             <ul className="mdl-menu mdl-js-menu">
-                <li className="mdl-menu__item">-</li>
-                <li className="mdl-menu__item">Single</li>
-                <li className="mdl-menu__item">Multi</li>
-                <li className="mdl-menu__item">New Multi</li>
+            {selections}
             </ul>
        );
     }
 });
 
 var AttendanceTableNode = React.createClass({
+    getInitialState: function () {
+        return {
+            status: this.props.status
+        };
+    },
+    updateStatus: function (event, id, value) {
+        this.setState({ status: value });
+    },
     render: function() {
         var id = "am." + this.props.name + "." + this.props.date;
+        var status = this.state.status;
+        var callback = this.updateStatus;
         return (
             <td className="mdl-data-table__cell--non-numeric">
                 <button id={id} className="mdl-button mdl-js-button">
-                    {this.props.status}
+                    {status}
                 </button>
-                <AttendanceTableNodeList uid={id} current_state={this.props.status}/>
+                <AttendanceTableNodeList uid={id} status={status} onClickCallback={callback} />
             </td>
         );
     }
