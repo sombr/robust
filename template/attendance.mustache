@@ -41,6 +41,7 @@ var AttendanceTableNode = React.createClass({
     },
     updateStatus: function (event, id, value) {
         this.setState({ status: value });
+        this.props.onUpdate();
     },
     render: function() {
         var self = this;
@@ -73,7 +74,7 @@ var AttendanceTable = React.createClass({
         } };
     },
     onUpdate: function () {
-        this.setState(
+        this.replaceState(
         { data: {
             days: [2,4],
             month: (new Date()).getMonth(),
@@ -116,7 +117,7 @@ var AttendanceTable = React.createClass({
                 var status = data[ student ][tdate] || "-";
                 var uid = student + "|" + tdate;
                 return (
-                    <AttendanceTableNode name={student} date={tdate} status={status} key={uid} selections={selections} />
+                    <AttendanceTableNode name={student} date={tdate} status={status} key={uid} selections={selections} onUpdate={self.onUpdate} />
                 );
             });
 
