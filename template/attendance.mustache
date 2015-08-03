@@ -19,7 +19,7 @@ var AttendanceTableNodeList = React.createClass({
     render: function() {
         var current = this.props.status;
         var callback = this.props.onClickCallback;
-        var selections = ["-", "Single", "Multi", "New Multi"].filter(function (item) { return (item != current) }).map(function (item) {
+        var selections = this.props.selections.filter(function (item) { return (item != current) }).map(function (item) {
             return (
                 <AttendanceTableNodeListItem key={item} onClickCallback={callback} value={item} />
             );
@@ -43,6 +43,7 @@ var AttendanceTableNode = React.createClass({
         this.setState({ status: value });
     },
     render: function() {
+        var self = this;
         var id = "am." + this.props.name + "." + this.props.date;
         var status = this.state.status;
         var callback = this.updateStatus;
@@ -51,7 +52,7 @@ var AttendanceTableNode = React.createClass({
                 <button id={id} className="mdl-button mdl-js-button">
                     {status}
                 </button>
-                <AttendanceTableNodeList uid={id} status={status} onClickCallback={callback} />
+                <AttendanceTableNodeList uid={id} status={status} onClickCallback={callback} selections={self.props.selections}/>
             </td>
         );
     }
@@ -64,14 +65,31 @@ var AttendanceTable = React.createClass({
             month: (new Date()).getMonth(),
             year: (new Date()).getFullYear(),
             data: {
-                'Karl': { "30/7/2015": "Yes!" },
-                'Karl1': { "30/7/2015": "Yes!" },
-                'Karl2': { "30/7/2015": "Yes!" },
-                'Karl3': { "30/7/2015": "Yes!" }
+                'Karl': { "25/8/2015": "MM" },
+                'Karl1': { "18/8/2015": "Yes!" },
+                'Karl2': { "6/8/2015": "S" },
+                'Karl3': { "11/8/2015": "Yes!" }
             }
         } };
     },
+    onUpdate: function () {
+        this.setState(
+        { data: {
+            days: [2,4],
+            month: (new Date()).getMonth(),
+            year: (new Date()).getFullYear(),
+            data: {
+                'Karl': { "11/8/2015": "M" },
+                'Karl1': { "11/8/2015": "M" },
+                'Karl3': { "11/8/2015": "S" }
+            }
+        }}
+        );
+    },
     render: function() {
+        var self = this;
+        var selections = this.props.selections;
+        var onUpdate = this.onUpdate;
         var data = this.state.data.data;
         var dates = [];
         var date_map = {};
@@ -98,7 +116,7 @@ var AttendanceTable = React.createClass({
                 var status = data[ student ][tdate] || "-";
                 var uid = student + "|" + tdate;
                 return (
-                    <AttendanceTableNode name={student} date={tdate} status={status} key={uid} />
+                    <AttendanceTableNode name={student} date={tdate} status={status} key={uid} selections={selections} />
                 );
             });
 
@@ -128,6 +146,6 @@ var AttendanceTable = React.createClass({
     }
 });
 React.render(
-    <AttendanceTable />,
+    <AttendanceTable selections={["-", "S", "M", "MM"]}/>,
     document.getElementById('attendance')
 );
