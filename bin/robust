@@ -4,14 +4,49 @@ package psgi::robust;
 use strict;
 use warnings;
 
+use feature "state";
+
 use lib 'lib';
 
 use Plack::Builder;
+use JSON;
+
+my $json = JSON->new;
 
 use Robust::Controller::Class;
 
 builder {
     enable "Plack::Middleware::AccessLog::Timed", format => '%{X_FORWARDED_FOR}i %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i"';
-    mount "/"      => sub { Robust::Controller::Class->new(shift)->index },
+    mount "/"      => sub {
+        state $index //= do {
+            open(my $file, "template/app.html") or die "No such file";
+            local $/ = undef;
+            my $data = <$file>;
+            close($file);
+
+            $data;
+        };
+
+        [ 200, [], [ $index ] ];
+    },
+    mount "/page.js"      => sub {
+        state $index //= do {
+            open(my $file, "template/page.js") or die "No such file";
+            local $/ = undef;
+            my $data = <$file>;
+            close($file);
+
+            $data;
+        };
+
+        [ 200, [], [ $index ] ];
+    },
     mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
+    mount "/session" => sub {
+        return [ 200, [], [ $json->encode(
+            {
+                name => "Andrew1",
+            }
+        ) ] ];
+    }
 };
