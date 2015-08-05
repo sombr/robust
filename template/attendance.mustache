@@ -36,11 +36,15 @@ var AttendanceTableNodeList = React.createClass({
 var AttendanceTableNode = React.createClass({
     getInitialState: function () {
         return {
-            status: this.props.status
+            status: this.props.status,
+            active: true
         };
     },
+    componentWillReceiveProps: function (props) {
+        this.setState({ status: props.status, active: true });
+    },
     updateStatus: function (event, id, value) {
-        this.setState({ status: value });
+        this.setState({ status: value, active: false });
         this.props.onUpdate();
     },
     render: function() {
@@ -50,7 +54,7 @@ var AttendanceTableNode = React.createClass({
         var callback = this.updateStatus;
         return (
             <td className="mdl-data-table__cell--non-numeric">
-                <button id={id} className="mdl-button mdl-js-button">
+                <button id={id} className="mdl-button mdl-js-button" disabled={!self.state.active}>
                     {status}
                 </button>
                 <AttendanceTableNodeList uid={id} status={status} onClickCallback={callback} selections={self.props.selections}/>
