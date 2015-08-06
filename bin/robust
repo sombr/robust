@@ -18,7 +18,7 @@ use Robust::Controller::Class;
 builder {
     enable "Plack::Middleware::AccessLog::Timed", format => '%{X_FORWARDED_FOR}i %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i"';
     mount "/"      => sub {
-        state $index //= do {
+        my $index //= do {
             open(my $file, "template/app.html") or die "No such file";
             local $/ = undef;
             my $data = <$file>;
@@ -29,18 +29,21 @@ builder {
 
         [ 200, [], [ $index ] ];
     },
-    mount "/page.js"      => sub {
-        state $index //= do {
-            open(my $file, "template/page.js") or die "No such file";
-            local $/ = undef;
-            my $data = <$file>;
-            close($file);
+    map {
+        my $name = $_;
+        mount "/$name" => sub {
+            my $index //= do {
+                open(my $file, "template/$name") or die "No such file";
+                local $/ = undef;
+                my $data = <$file>;
+                close($file);
 
-            $data;
-        };
+                $data;
+            };
 
-        [ 200, [], [ $index ] ];
-    },
+            [ 200, [], [ $index ] ];
+        }
+    } qw/ page.js util.js /,
     mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
     mount "/session" => sub {
         return [ 200, [], [ $json->encode(

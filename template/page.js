@@ -1,50 +1,48 @@
 "use strict";
 
-var Page = React.createClass({
-    displayName: "Page",
+var PageHeader = React.createClass({
+    displayName: "PageHeader",
 
-    getInitialState: function getInitialState() {
-        return {};
-    },
-    componentWillMount: function componentWillMount() {
-        var self = this;
-        $.ajax({
-            url: "session/get",
-            dataType: "json"
-        }).success(function (data, status, xhr) {
-            console.log(data);
-            self.setState(data);
-        });
-    },
     render: function render() {
-        var self = this;
-        var page_title = document.getElementById('page_title');
-        page_title.innerHTML = this.props.title;
         return React.createElement(
-            "div",
-            { className: "mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" },
-            React.createElement(
-                "header",
-                { className: "mdl-layout__header" },
-                React.createElement(
-                    "div",
-                    { className: "mdl-layout__header-row" },
-                    React.createElement("div", { className: "mdl-layout-spacer" })
-                )
-            ),
+            "header",
+            { className: "mdl-layout__header" },
             React.createElement(
                 "div",
-                { className: "mdl-layout__drawer" },
-                React.createElement(
-                    "span",
-                    { className: "mdl-layout-title" },
-                    React.createElement(
-                        "i",
-                        null,
-                        self.state.name
-                    )
-                ),
-                React.createElement(
+                { className: "mdl-layout__header-row" },
+                React.createElement("div", { className: "mdl-layout-spacer" })
+            )
+        );
+    }
+});
+
+var PageDrawerTop = React.createClass({
+    displayName: "PageDrawerTop",
+
+    render: function render() {
+        var text = "Loading...";
+        if (this.props.session) {
+            text = this.props.session.name || "Вход";
+        }
+        return React.createElement(
+            "span",
+            { className: "mdl-layout-title" },
+            React.createElement(
+                "i",
+                null,
+                text
+            )
+        );
+    }
+});
+
+var PageDrawerBottom = React.createClass({
+    displayName: "PageDrawerBottom",
+
+    render: function render() {
+        if (this.props.session) {
+            if (this.props.session.name) {
+                return React.createElement(
                     "nav",
                     { className: "mdl-navigation" },
                     React.createElement(
@@ -56,13 +54,9 @@ var Page = React.createClass({
                             "Karl"
                         )
                     )
-                ),
-                React.createElement(
-                    "span",
-                    { className: "mdl-layout-title" },
-                    "Sign In"
-                ),
-                React.createElement(
+                );
+            } else {
+                return React.createElement(
                     "div",
                     { className: "mdl-grid" },
                     React.createElement(
@@ -75,13 +69,69 @@ var Page = React.createClass({
                         ),
                         " "
                     )
-                )
-            ),
-            React.createElement("main", { className: "mdl-layout__content" })
+                );
+            }
+        } else {
+            return React.createElement("div", { className: "mdl-progress mdl-js-progress mdl-progress__indeterminate progress-demo" });
+        }
+    }
+});
+
+var PageDrawer = React.createClass({
+    displayName: "PageDrawer",
+
+    render: function render() {
+        var self = this;
+        return React.createElement(
+            "div",
+            { className: "mdl-layout__drawer" },
+            React.createElement(PageDrawerTop, { session: self.props.session }),
+            React.createElement(PageDrawerBottom, { session: self.props.session })
+        );
+    }
+});
+
+var PageMain = React.createClass({
+    displayName: "PageMain",
+
+    render: function render() {
+        return React.createElement("main", { className: "mdl-layout__content" });
+    }
+});
+
+var Page = React.createClass({
+    displayName: "Page",
+
+    getInitialState: function getInitialState() {
+        return {};
+    },
+    componentWillMount: function componentWillMount() {
+        var self = this;
+        $.ajax({
+            url: "session/get",
+            dataType: "json"
+        }).success(function (data, status, xhr) {
+            self.setState({ session: data });
+        });
+    },
+    render: function render() {
+        var self = this;
+        var page_title = document.getElementById('page_title');
+        page_title.innerHTML = this.props.title;
+
+        var session;
+        if (this.state) {
+            session = this.state.session;
+        }
+        return React.createElement(
+            "div",
+            { className: "mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" },
+            React.createElement(PageHeader, null),
+            React.createElement(PageDrawer, { session: session }),
+            React.createElement(PageMain, { session: session })
         );
     }
 });
 $(document).ready(function () {
     React.render(React.createElement(Page, { title: "Отмечатор" }), document.getElementById('page_content'));
 });
-
