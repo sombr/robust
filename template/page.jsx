@@ -28,7 +28,7 @@ var PageDrawerBottom = React.createClass({
             if ( this.props.session.name ) {
                 return (
                     <nav className="mdl-navigation">
-                        <a className="mdl-navigation__link" href="/className/uid"><h6>Karl</h6></a>
+                        <a className="mdl-navigation__link" href="#"><h6>Karl</h6></a>
                     </nav>
                 );
             } else {
@@ -73,14 +73,16 @@ var PageMain = React.createClass({
 });
 
 var Page = React.createClass({
-    getInitialState: function () { return {} },
+    onClick: function (event) {
+        console.log(event.target);
+    },
     componentWillMount: function () {
         var self = this;
         $.ajax({
             url: "session/get",
             dataType: "json"
         }).success(function (data, status, xhr) {
-            self.setState({ session: data });
+            self.setState({ session: (data || {}) });
         });
     },
     render: function() {
@@ -93,7 +95,7 @@ var Page = React.createClass({
             session = this.state.session;
         }
         return (
-            <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+            <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" onClick={this.onClick}>
                 <PageHeader/>
                 <PageDrawer session={session} />
                 <PageMain session={session} />
