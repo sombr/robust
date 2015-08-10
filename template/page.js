@@ -42,19 +42,7 @@ var PageDrawerBottom = React.createClass({
     render: function render() {
         if (this.props.session) {
             if (this.props.session.name) {
-                return React.createElement(
-                    "nav",
-                    { className: "mdl-navigation" },
-                    React.createElement(
-                        "a",
-                        { className: "mdl-navigation__link", href: "/className/uid" },
-                        React.createElement(
-                            "h6",
-                            null,
-                            "Karl"
-                        )
-                    )
-                );
+                return React.createElement(ClassNav, null);
             } else {
                 return React.createElement(
                     "div",
@@ -72,7 +60,7 @@ var PageDrawerBottom = React.createClass({
                 );
             }
         } else {
-            return React.createElement("div", { className: "mdl-progress mdl-js-progress mdl-progress__indeterminate progress-demo" });
+            return React.createElement("div", { className: "mdl-progress mdl-js-progress mdl-progress__indeterminate" });
         }
     }
 });
@@ -102,8 +90,8 @@ var PageMain = React.createClass({
 var Page = React.createClass({
     displayName: "Page",
 
-    getInitialState: function getInitialState() {
-        return {};
+    onClick: function onClick(event) {
+        console.log(event.target);
     },
     componentWillMount: function componentWillMount() {
         var self = this;
@@ -111,7 +99,7 @@ var Page = React.createClass({
             url: "session/get",
             dataType: "json"
         }).success(function (data, status, xhr) {
-            self.setState({ session: data });
+            self.setState({ session: data || {} });
         });
     },
     render: function render() {
@@ -125,7 +113,7 @@ var Page = React.createClass({
         }
         return React.createElement(
             "div",
-            { className: "mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" },
+            { className: "mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header", onClick: this.onClick },
             React.createElement(PageHeader, null),
             React.createElement(PageDrawer, { session: session }),
             React.createElement(PageMain, { session: session })

@@ -27,9 +27,7 @@ var PageDrawerBottom = React.createClass({
         if ( this.props.session ) {
             if ( this.props.session.name ) {
                 return (
-                    <nav className="mdl-navigation">
-                        <a className="mdl-navigation__link" href="#"><h6>Karl</h6></a>
-                    </nav>
+                    <ClassNav />
                 );
             } else {
                 return (
@@ -45,7 +43,7 @@ var PageDrawerBottom = React.createClass({
             }
         } else {
             return (
-                <div className="mdl-progress mdl-js-progress mdl-progress__indeterminate progress-demo"></div>
+                <div className="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             );
         }
     }
