@@ -43,7 +43,7 @@ builder {
 
             [ 200, [], [ $index ] ];
         }
-    } qw/ page.js util.js /,
+    } map { $_ =~ s{^.*?/([^/]+js)$}{$1}; $_ } glob("template/*.js"),
     mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
     mount "/session" => sub {
         return [ 200, [], [ $json->encode(
