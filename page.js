@@ -60,7 +60,7 @@ var PageDrawerBottom = React.createClass({
                 );
             }
         } else {
-            return React.createElement("div", { className: "mdl-progress mdl-js-progress mdl-progress__indeterminate" });
+            return React.createElement(MDLProgress, null);
         }
     }
 });

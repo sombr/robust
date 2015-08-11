@@ -43,7 +43,7 @@ var PageDrawerBottom = React.createClass({
             }
         } else {
             return (
-                <div className="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+                <MDLProgress/>
             );
         }
     }
@@ -82,6 +82,9 @@ var Page = React.createClass({
         }).success(function (data, status, xhr) {
             self.setState({ session: (data || {}) });
         });
+    },
+    componentDidMount: function () {
+        componentHandler.upgradeElement(this.getDOMNode(), "MaterialLayout");
     },
     render: function() {
         var self = this;

@@ -17,9 +17,6 @@ var ClassNav = React.createClass({
             self.setState({ classes: (data || []) });
         });
     },
-    componentDidMount: function () {
-        componentHandler.upgradeElement(this.getDOMNode(), "MaterialProgress");
-    },
     render: function () {
         var self = this;
         if ( self.state ) {
@@ -34,7 +31,7 @@ var ClassNav = React.createClass({
             );
         } else {
             return (
-                <div className="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+                <MDLProgress/>
             );
         }
     }
