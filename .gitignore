@@ -1,7 +1,5 @@
 /blib/
-/template/class_nav.js
-/template/common.js
-/template/page.js
+/js/
 node_modules/
 /.build/
 _build/

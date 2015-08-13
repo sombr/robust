@@ -27,7 +27,7 @@ var PageDrawerBottom = React.createClass({
         if ( this.props.session ) {
             if ( this.props.session.name ) {
                 return (
-                    <ClassNav />
+                    <ClassNav session={this.props.session} />
                 );
             } else {
                 return (
@@ -73,6 +73,10 @@ var PageMain = React.createClass({
 var Page = React.createClass({
     onClick: function (event) {
         console.log(event.target);
+        if ( event.target.className == "class_nav_link" ) {
+            self.setState({ active_class: event.target.data("class-uid") });
+            event.preventDefault();
+        }
     },
     componentWillMount: function () {
         var self = this;
@@ -97,7 +101,7 @@ var Page = React.createClass({
         }
         return (
             <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" onClick={this.onClick}>
-                <PageHeader/>
+                <PageHeader />
                 <PageDrawer session={session} />
                 <PageMain session={session} />
             </div>

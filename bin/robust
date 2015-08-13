@@ -44,11 +44,20 @@ builder {
             [ 200, [], [ $index ] ];
         }
     } map { $_ =~ s{^.*?/([^/]+js)$}{$1}; $_ } glob("template/*.js"),
-    mount "/class" => sub { Robust::Controller::Class->new(shift)->show },
+    mount "/classes" => sub {
+        return [ 200, [], [
+            $json->encode(
+                [
+                    { name => "Начинающие", start => time(), uid => 123 }
+                ]
+            )
+        ] ];
+    },
     mount "/session" => sub {
         return [ 200, [], [ $json->encode(
             {
                 name => "Andrew1",
+                rsid => 123
             }
         ) ] ];
     }
