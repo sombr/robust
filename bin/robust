@@ -44,6 +44,10 @@ builder {
             [ 200, [], [ $index ] ];
         }
     } map { $_ =~ s{^.*?/([^/]+js)$}{$1}; $_ } glob("js/*.js"),
+    mount "/js/all" => sub {
+        my $all = qx{uglifyjs js/* -b};
+        [ 200, [], [ $all ] ];
+    },
     mount "/classes" => sub {
         return [ 200, [], [
             $json->encode(
