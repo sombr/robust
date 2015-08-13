@@ -31,9 +31,9 @@ builder {
     },
     map {
         my $name = $_;
-        mount "/$name" => sub {
+        mount "/js/$name" => sub {
             my $index //= do {
-                open(my $file, "template/$name") or die "No such file";
+                open(my $file, "js/$name") or die "No such file";
                 local $/ = undef;
                 my $data = <$file>;
                 close($file);
@@ -43,7 +43,7 @@ builder {
 
             [ 200, [], [ $index ] ];
         }
-    } map { $_ =~ s{^.*?/([^/]+js)$}{$1}; $_ } glob("template/*.js"),
+    } map { $_ =~ s{^.*?/([^/]+js)$}{$1}; $_ } glob("js/*.js"),
     mount "/classes" => sub {
         return [ 200, [], [
             $json->encode(
