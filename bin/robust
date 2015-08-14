@@ -14,8 +14,6 @@ use File::Slurp qw/ read_file /;
 
 my $json = JSON->new;
 
-use Robust::Controller::Class;
-
 sub data {
     state $data //= $json->decode(read_file("data/data.json"));
 };
