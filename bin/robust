@@ -10,36 +10,27 @@ use lib 'lib';
 
 use Plack::Builder;
 use JSON;
+use File::Slurp qw/ read_file /;
 
 my $json = JSON->new;
 
 use Robust::Controller::Class;
 
+sub data {
+    state $data //= $json->decode(read_file("data/data.json"));
+};
+
 builder {
     enable "Plack::Middleware::AccessLog::Timed", format => '%{X_FORWARDED_FOR}i %h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-agent}i"';
     mount "/"      => sub {
-        my $index //= do {
-            open(my $file, "template/app.html") or die "No such file";
-            local $/ = undef;
-            my $data = <$file>;
-            close($file);
-
-            $data;
-        };
+        my $index //= read_file("template/app.html");
 
         [ 200, [], [ $index ] ];
     },
     map {
         my $name = $_;
         mount "/js/$name" => sub {
-            my $index //= do {
-                open(my $file, "js/$name") or die "No such file";
-                local $/ = undef;
-                my $data = <$file>;
-                close($file);
-
-                $data;
-            };
+            my $index //= read_file("js/$name");
 
             [ 200, [], [ $index ] ];
         }
