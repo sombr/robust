@@ -1,10 +1,16 @@
 package Robust::Schema::Attendance;
 use Moo;
-
 with "Robust::Schema";
+
+use Robust::Schema::Student;
+use Robust::Schema::Group;
 
 sub init {
     my ($class, $dbh) = @_;
+
+    # init dependance
+    Robust::Schema::Student->db;
+    Robust::Schema::Group->db;
 
     $dbh->do(q{
         CREATE TABLE IF NOT EXISTS attendances (
@@ -20,7 +26,10 @@ sub init {
             payment INTEGER NOT NULL,
 
             CONSTRAINT u_student_group_date
-                UNIQUE ( student_id, group_id, date )
+                UNIQUE ( student_id, group_id, date ),
+
+            FOREIGN KEY (student_id) REFERENCES students(id),
+            FOREIGN KEY (group_id) REFERENCES groups(id)
         )
     });
 }

@@ -4,11 +4,14 @@ with "Robust::Schema";
 
 use Types::Standard qw/:all/;
 
+sub table { "students" }
+
 sub init {
     my ($class, $dbh) = @_;
 
-    $dbh->do(q{
-        CREATE TABLE IF NOT EXISTS students (
+    my $table = $class->table;
+    $dbh->do(qq{
+        CREATE TABLE IF NOT EXISTS $table (
             id INTEGER PRIMARY KEY ASC,
             name TEXT UNIQUE NOT NULL,
             sex  TEXT NOT NULL,
@@ -21,15 +24,9 @@ sub populate {
     my $self = shift;
     my $data = require "data/student.data";
 
-    my $req = $self->db->prepare("INSERT INTO students (name, sex, is_with) VALUES (?,?,?)");
+    my $table = $self->table;
+    my $req = $self->db->prepare("INSERT INTO $table (name, sex, is_with) VALUES (?,?,?)");
     $req->execute( @$_{qw/name sex is_with/} ) for ( @$data );
-}
-
-sub all {
-    my $self = shift;
-    my $data = $self->db->selectall_hashref("SELECT * FROM students", "id");
-
-    map { $self->new(%$_) } values %$data
 }
 
 #----------------------------------------------------------------------------------------
