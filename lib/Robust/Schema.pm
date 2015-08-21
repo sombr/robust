@@ -38,11 +38,11 @@ sub all {
 }
 
 sub by {
-    my ($self, $field) = @_;
+    my ($self, $field, $custom_select) = @_;
     $field = [ $field ] unless ref $field;
 
     my $table = $self->table;
-    my $data = $self->db->selectall_hashref("SELECT * FROM $table", $field);
+    my $data = $self->db->selectall_hashref( $custom_select || "SELECT * FROM $table", $field);
 
     $self->_build( $data, scalar @$field );
 }

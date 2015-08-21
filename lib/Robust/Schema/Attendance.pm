@@ -6,6 +6,7 @@ use Robust::Schema::Student;
 use Robust::Schema::Group;
 
 use Date::Parse qw/str2time/;
+use Types::Standard qw/:all/;
 
 sub table { "attendances" }
 
@@ -64,5 +65,81 @@ sub populate {
     my $req = $self->db->prepare("INSERT INTO $table (". join(",", @fields) .") VALUES (". join(",", ("?")x@fields) .")");
     $req->execute( @$_{@fields} ) for ( @$data );
 }
+
+around by => sub {
+    my ($orig, $self, $field) = @_;
+
+    $self->$orig($field, q{
+        SELECT
+            attendances.id,
+            type,
+            cost,
+            student_id,
+            group_id,
+            date,
+            payment,
+            students.name as student,
+            groups.name as "group"
+        FROM attendances JOIN students ON students.id = student_id
+                         JOIN groups ON groups.id = group_id
+    });
+};
+
+has id => (
+    is => "ro",
+    isa => Int,
+    required => 1,
+);
+
+has type => (
+    is => "ro",
+    isa => Enum[qw/S Skip/, map { "A-$_" } (1..8)],
+    required => 1,
+);
+
+has cost => (
+    is => "lazy",
+    isa => Int,
+    default => sub {
+        my $self = shift;
+        return 300 if ($self->type eq "S");
+        return 2000 if ($self->type eq "A-1");
+        return 0;
+    }
+);
+
+has student_id => (
+    is => "ro",
+    isa => Int,
+    required => 1,
+);
+
+has student => (
+    is => "lazy",
+    isa => Str,
+);
+
+has group_id => (
+    is => "ro",
+    isa => Int,
+    required => 1,
+);
+
+has group => (
+    is => "lazy",
+    isa => Str,
+);
+
+has date => (
+    is => "ro",
+    isa => Int,
+    required => 1,
+);
+
+has payment => (
+    is => "ro",
+    isa => Int,
+    required => 1,
+);
 
 1;
