@@ -22,6 +22,7 @@ sub init {
 
 sub populate {
     my $self = shift;
+    return if $self->count;
     my $data = require "data/student.data";
 
     my $table = $self->table;

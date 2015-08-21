@@ -23,6 +23,7 @@ sub init {
 
 sub populate {
     my $self = shift;
+    return if $self->count;
     my $data = require "data/group.data";
 
     my $table = $self->table;
