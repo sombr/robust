@@ -3,6 +3,7 @@
 node_modules/
 /.build/
 /data/
+/data
 _build/
 cover_db/
 inc/
