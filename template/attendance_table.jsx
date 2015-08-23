@@ -21,9 +21,80 @@ var AttendanceTableHeader = React.createClass({
     }
 });
 
+var AttendanceTableBodyRowCellList = React.createClass({
+    componentDidMount: function () {
+        componentHandler.upgradeElement(this.getDOMNode(), "MaterialMenu");
+    },
+    render: function () {
+        var self = this;
+        return (
+                <ul className="mdl-menu mdl-js-menu" htmlFor={self.props.htmlFor}>
+                <li className="mdl-menu__item">Some Action</li>
+                <li className="mdl-menu__item">Another Action</li>
+                <li className="mdl-menu__item">Yet Another Action</li>
+                </ul>
+        );
+    }
+});
+
+var AttendanceTableBodyRowCellButton = React.createClass({
+    componentDidMount: function () {
+        componentHandler.upgradeElement(this.getDOMNode(), "MaterialButton");
+    },
+    render: function () {
+        var self = this;
+        return (
+            <button className="mdl-button mdl-js-button mdl-button--icon" id={self.props.hash}>
+            <i className="material-icons">looks_8</i>
+            </button>
+        );
+    }
+});
+
+var AttendanceTableBodyRowCell = React.createClass({
+    render: function () {
+        var self = this;
+        return (
+            <td className="mdl-data-table__cell--non-numeric">
+                <AttendanceTableBodyRowCellButton hash={self.props.hash+"btn"} key={self.props.hash+"btn"}/>
+                <AttendanceTableBodyRowCellList htmlFor={self.props.hash+"btn"} />
+            </td>
+        );
+    }
+});
+
+var AttendanceTableBodyRow = React.createClass({
+    render: function () {
+        var self = this;
+        var data = self.props.data || {};
+        var dates = self.props.dates || [];
+
+        return (
+            <tr>
+                <td className="mdl-data-table__cell--non-numeric" key={self.props.name}>{self.props.name}</td>
+                {
+                    dates.map( date => {
+                        var hash = CryptoJS.MD5(self.props.name + date.getTime());
+                        return (<AttendanceTableBodyRowCell key={hash} hash={hash} date={date}/>);
+                    })
+                }
+            </tr>
+        );
+    }
+});
+
 var AttendanceTableBody = React.createClass({
     render: function () {
-        return (<tbody></tbody>);
+        var data = this.props.attendance || {};
+        return (
+            <tbody>
+                {
+                    Object.keys(data).map( name => {
+                        return (<AttendanceTableBodyRow key={name} name={name} data={data[name]} dates={this.props.dates}/>)
+                    })
+                }
+            </tbody>
+        );
     }
 });
 
