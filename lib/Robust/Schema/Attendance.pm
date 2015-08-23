@@ -30,12 +30,33 @@ sub init {
 
             payment INTEGER NOT NULL,
 
+            CHECK ( cost >= 0 ),
+            CHECK ( date >= 0 ),
+
             CONSTRAINT u_student_group_date
                 UNIQUE ( student_id, group_id, date ),
 
             FOREIGN KEY (student_id) REFERENCES students(id),
             FOREIGN KEY (group_id) REFERENCES groups(id)
         )
+    });
+
+    $dbh->do(q{
+        CREATE VIEW  IF NOT EXISTS
+        attendance_info AS
+        SELECT
+            attendances.id,
+            type,
+            cost,
+            student_id,
+            group_id,
+            date,
+            payment,
+            students.name as student,
+            groups.name as "group"
+        FROM attendances JOIN students ON students.id = student_id
+                         JOIN groups ON groups.id = group_id
+
     });
 }
 
@@ -70,18 +91,7 @@ around by => sub {
     my ($orig, $self, $field) = @_;
 
     $self->$orig($field, q{
-        SELECT
-            attendances.id,
-            type,
-            cost,
-            student_id,
-            group_id,
-            date,
-            payment,
-            students.name as student,
-            groups.name as "group"
-        FROM attendances JOIN students ON students.id = student_id
-                         JOIN groups ON groups.id = group_id
+        SELECT * FROM attendance_info
     });
 };
 

@@ -15,7 +15,9 @@ sub init {
             id INTEGER PRIMARY KEY ASC,
             name TEXT UNIQUE NOT NULL,
             sex  TEXT NOT NULL,
-            is_with TEXT
+            is_with TEXT,
+
+            CHECK ( sex IN ( "M", "F" ) )
         )
     });
 }

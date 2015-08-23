@@ -15,6 +15,9 @@ sub init {
             id INTEGER PRIMARY KEY ASC,
             name TEXT NOT NULL,
             start INTEGER NOT NULL,
+
+            CHECK ( start >= 0 ),
+
             CONSTRAINT u_name_start
                 UNIQUE ( name, start )
         )
