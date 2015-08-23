@@ -9,10 +9,17 @@ use feature "state";
 use lib 'lib';
 
 use Plack::Builder;
-use JSON;
+use Plack::Request;
+
+use JSON -convert_blessed_universally;
 use File::Slurp qw/ read_file /;
 
-my $json = JSON->new;
+use Robust::Schema;
+use Robust::Schema::Group;
+use Robust::Schema::Student;
+use Robust::Schema::Attendance;
+
+my $json = JSON->new->convert_blessed(1);
 
 sub data {
     state $data //= $json->decode(read_file("data/data.json"));
@@ -38,10 +45,14 @@ builder {
         [ 200, [], [ $all ] ];
     },
     mount "/classes" => sub {
+        my $req = Plack::Request->new(shift);
+        use Data::Dumper;
+        warn Dumper( $req->parameters );
+
         return [ 200, [], [
             $json->encode(
                 [
-                    { name => "Начинающие", start => time(), uid => 123 }
+                    Robust::Schema::Group->all
                 ]
             )
         ] ];

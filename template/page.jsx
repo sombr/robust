@@ -63,8 +63,10 @@ var PageDrawer = React.createClass({
 
 var PageMain = React.createClass({
     render: function () {
+        var self = this;
         return (
             <main className="mdl-layout__content">
+                <AttendanceTable group={self.props.active_class} />
             </main>
         );
     }
@@ -72,11 +74,12 @@ var PageMain = React.createClass({
 
 var Page = React.createClass({
     onClick: function (event) {
-        console.log(event.target);
-        if ( event.target.className == "class_nav_link" ) {
-            //self.setState({ active_class: event.target.data("class-uid") });
-        }
+        var self = this;
         event.preventDefault();
+
+        if ( $(event.target).hasClass("class_nav_link") ) {
+            self.setState({ active_class: $(event.target).data("class-id") });
+        }
     },
     componentWillMount: function () {
         var self = this;
@@ -96,14 +99,19 @@ var Page = React.createClass({
         page_title.innerHTML = this.props.title;
 
         var session;
+        var active_class;
+        var rsid;
         if ( this.state ) {
             session = this.state.session;
+            active_class = this.state.active_class;
+            rsid = session.rsid;
         }
+
         return (
             <div className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header" onClick={this.onClick}>
                 <PageHeader />
-                <PageDrawer session={session} />
-                <PageMain session={session} />
+                <PageDrawer session={session} key={rsid} />
+                <PageMain session={session} active_class={active_class} key={rsid+"|"+active_class}/>
             </div>
         );
     }

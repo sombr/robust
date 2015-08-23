@@ -1,9 +1,9 @@
 var GroupNavLink = React.createClass({
     render: function () {
         var group = this.props.group;
-        var anchor = "/class/" + group.uid;
+        var anchor = "/classes/" + group.id;
         return (
-            <a className="mdl-navigation__link class_nav_link" href={anchor} data-class-uid={group.uid}>
+            <a className="mdl-navigation__link class_nav_link" href={anchor} data-class-id={group.id}>
                 {group.name}
             </a>
         );
@@ -27,7 +27,6 @@ var GroupNav = React.createClass({
     render: function () {
         var self = this;
         if ( self.state ) {
-            console.log( self.state.classes );
             var group_links = self.state.classes.map(cl => {
                 var key = cl.name + "|" + cl.start;
                 return (
