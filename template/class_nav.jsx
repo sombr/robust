@@ -1,16 +1,16 @@
-var ClassNavLink = React.createClass({
+var GroupNavLink = React.createClass({
     render: function () {
-        var dclass = this.props.dclass;
-        var anchor = "/class/" + dclass.uid;
+        var group = this.props.group;
+        var anchor = "/class/" + group.uid;
         return (
-            <a className="mdl-navigation__link" href={anchor}>
-                <h6 className="class_nav_link" data-class-uid={dclass.uid}>{dclass.name}</h6>
+            <a className="mdl-navigation__link class_nav_link" href={anchor} data-class-uid={group.uid}>
+                {group.name}
             </a>
         );
     }
 });
 
-var ClassNav = React.createClass({
+var GroupNav = React.createClass({
     componentWillMount: function () {
         var self = this;
         $.ajax({
@@ -28,15 +28,15 @@ var ClassNav = React.createClass({
         var self = this;
         if ( self.state ) {
             console.log( self.state.classes );
-            var class_links = self.state.classes.map(cl => {
+            var group_links = self.state.classes.map(cl => {
                 var key = cl.name + "|" + cl.start;
                 return (
-                    <ClassNavLink key={key} dclass={cl} />
+                    <GroupNavLink key={key} group={cl} />
                 );
             });
             return (
                 <nav className="mdl-navigation">
-                    {class_links}
+                    {group_links}
                 </nav>
             );
         } else {

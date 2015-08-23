@@ -27,7 +27,7 @@ var PageDrawerBottom = React.createClass({
         if ( this.props.session ) {
             if ( this.props.session.name ) {
                 return (
-                    <ClassNav session={this.props.session} />
+                    <GroupNav session={this.props.session} />
                 );
             } else {
                 return (
@@ -74,9 +74,9 @@ var Page = React.createClass({
     onClick: function (event) {
         console.log(event.target);
         if ( event.target.className == "class_nav_link" ) {
-            self.setState({ active_class: event.target.data("class-uid") });
-            event.preventDefault();
+            //self.setState({ active_class: event.target.data("class-uid") });
         }
+        event.preventDefault();
     },
     componentWillMount: function () {
         var self = this;
