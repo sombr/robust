@@ -39,10 +39,14 @@ sub all {
 
 sub by {
     my ($self, $field, $custom_select) = @_;
+    $self->_build_from_select($field, $custom_select || ("SELECT * FROM " . $self->table . " ORDER BY id"));
+}
+
+sub _build_from_select {
+    my ($self, $field, $req, @params) = @_;
     $field = [ $field ] unless ref $field;
 
-    my $table = $self->table;
-    my $data = $self->db->selectall_hashref( $custom_select || "SELECT * FROM $table", $field);
+    my $data = $self->db->selectall_hashref($req, $field, undef, @params);
 
     $self->_build( $data, scalar @$field );
 }

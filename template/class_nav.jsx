@@ -27,7 +27,9 @@ var GroupNav = React.createClass({
     render: function () {
         var self = this;
         if ( self.state ) {
-            var group_links = self.state.classes.map(cl => {
+            var group_links = self.state.classes.sort(function (a,b) {
+                return a.name.localeCompare(b.name);
+            }).map(cl => {
                 var key = cl.name + "|" + cl.start;
                 return (
                     <GroupNavLink key={key} group={cl} />

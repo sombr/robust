@@ -46,16 +46,16 @@ builder {
     },
     mount "/classes" => sub {
         my $req = Plack::Request->new(shift);
-        use Data::Dumper;
-        warn Dumper( $req->parameters );
-
-        return [ 200, [], [
-            $json->encode(
-                [
-                    Robust::Schema::Group->all
-                ]
-            )
-        ] ];
+        if ( $req->path =~ m{/(\d{1,10})} ) {
+            my $att = Robust::Schema::Attendance->by_id($1, ["student", "date"]);
+            if ( $att ) {
+                return [ 200, [], [ $json->encode( $att )  ] ];
+            } else {
+                return [ 404, [], [] ];
+            }
+        } else {
+            return [ 200, [], [ $json->encode([Robust::Schema::Group->all]) ] ];
+        }
     },
     mount "/session" => sub {
         return [ 200, [], [ $json->encode(

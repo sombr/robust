@@ -18,4 +18,7 @@ var Util = {
             console.log("Corrupt params: " + name + " = " + val);
         }
     },
+    format_date: function(date, short) {
+        return (date.getDate() + "/" + (date.getMonth()+1) + ( short ? "" : "/" + date.getFullYear() ));
+    }
 };

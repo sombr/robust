@@ -97,6 +97,14 @@ around by => sub {
     });
 };
 
+sub by_id {
+    my ($self, $id, $fields) = @_;
+    $fields = ref $fields ? ["group_id", @$fields] : ["group_id", $fields];
+    $self->_build_from_select($fields, q{
+        SELECT * FROM attendance_info WHERE group_id = ?
+    }, $id)->{$id};
+}
+
 has id => (
     is => "ro",
     isa => Int,
