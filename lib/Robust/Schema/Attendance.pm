@@ -21,6 +21,7 @@ sub init {
         CREATE TABLE IF NOT EXISTS attendances (
             id INTEGER PRIMARY KEY ASC,
             type TEXT NOT NULL,
+            skip BOOLEAN NOT NULL,
             cost INTEGER NOT NULL,
 
             student_id INTEGER NOT NULL,
@@ -47,6 +48,7 @@ sub init {
         SELECT
             attendances.id,
             type,
+            skip,
             cost,
             student_id,
             group_id,
@@ -82,7 +84,7 @@ sub populate {
     }
 
     my $table = $self->table;
-    my @fields = qw/type cost student_id group_id date payment/;
+    my @fields = qw/type cost student_id group_id date payment skip/;
     my $req = $self->db->prepare("INSERT INTO $table (". join(",", @fields) .") VALUES (". join(",", ("?")x@fields) .")");
     $req->execute( @$_{@fields} ) for ( @$data );
 }
@@ -103,7 +105,13 @@ has id => (
 
 has type => (
     is => "ro",
-    isa => Enum[qw/S Skip/, map { "A-$_" } (1..8)],
+    isa => Enum[qw/S/, map { "A-$_" } (1..8)],
+    required => 1,
+);
+
+has skip => (
+    is => "ro",
+    isa => Bool,
     required => 1,
 );
 
@@ -112,8 +120,10 @@ has cost => (
     isa => Int,
     default => sub {
         my $self = shift;
-        return 300 if ($self->type eq "S");
-        return 2000 if ($self->type eq "A-1");
+        unless ( $self->skip ) {
+            return 300 if ($self->type eq "S");
+            return 2000 if ($self->type eq "A-1");
+        }
         return 0;
     }
 );
